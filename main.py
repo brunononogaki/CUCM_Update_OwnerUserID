@@ -1,9 +1,13 @@
 import requests, urllib3, csv
+import json
 urllib3.disable_warnings()
 
-url = "https://brsaosrccm01.didatabr.com:8443/axl/"
-username = "admin"
-password = "!lab@DD123"
+with open ("config.json") as config:
+    data_acesso = json.load(config)
+    url = data_acesso["url"]
+    username = data_acesso["username"]
+    password = data_acesso["password"]
+    auth = (username,password)
 
 with open ('lista_usuarios.csv') as arquivo:
     readCSV = csv.reader(arquivo, delimiter=",")
@@ -22,7 +26,7 @@ with open ('lista_usuarios.csv') as arquivo:
         </SOAP-ENV:Envelope>
         """
 
-        p = requests.post(url,verify=False,auth=(username, password),data=data)
+        p = requests.post(url,verify=False,auth=auth,data=data)
 
         if p.status_code == 200:
             print("Sucesso! Usuario {} foi associado ao device {} com sucesso".format(usuario,device))
